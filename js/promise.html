@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="module">
+        import cal from '../module/calculator.js';
+        console.log(cal.add(1,2));
+    </script>
+</head>
+<body>
+    <script>
+        let fetch = (url, method, data) => {
+            return new Promise((resolve, reject)=>{
+                const xhr = new XMLHttpRequest(); //이걸로 통신을 일으킴
+                xhr.open(method, url); //메소드가 다르면 다른 기능?으로 봄
+                xhr.setRequestHeader('Content-type','application/json');
+                xhr.send (JSON.stringify(data)); //데이터 전송
+
+                xhr.onreadystatechange = function(){
+                    if ( xhr.readyState != XMLHttpRequest.DONE) return;
+
+                    if ( xhr.status >= 200 && xhr.status < 400){ //200~400번 사이면 정상 접속..
+                        resolve(xhr.response);
+                    }else {
+                        reject(new Error(xhr.status));
+                    }
+                }
+            })
+        }
+
+        fetch('https://reqres.in/api/users?page=2', 'Get')
+            .then(result => JSON.parse(result)) //console.log(result) 에서 수정. parsing 하는 작업이 들어가야 함
+            .then(data => console.log(data))
+            .catch(err => console.log(err));
+
+        console.log('fetch 바깥에 실행'); 
+    </script>
+</body>
+</html>
